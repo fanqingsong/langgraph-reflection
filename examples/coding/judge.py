@@ -15,6 +15,11 @@ from .config import get_azure_model_name
 
 
 # Define type classes for code extraction
+# https://python.langchain.ac.cn/docs/how_to/tool_calling/#typeddict-class
+# LangChain 的 bind_tools 支持这些类型用于 OpenAI 等模型的 function-calling/structured tools。
+# 这里直接将 TypedDict 类型作为工具传递，是因为 TypedDict 用于描述 expected input/output schema，LangChain 自动推断参数结构，
+# 并根据这些 schema 调用 API。详见：
+# https://python.langchain.com/docs/expression_language/cookbook/function_calling   
 class ExtractPythonCode(TypedDict):
     """Type class for extracting Python code. The python_code field is the code to be extracted."""
 
@@ -50,7 +55,11 @@ def try_running(state: dict) -> dict | None:
         model=get_azure_model_name("gpt-4o-mini"),
         model_provider="azure_openai"
     )
-
+    # 工具通常是函数（带有 __call__ 方法），但也支持 TypedDict 或类似 Pydantic/JsonSchema 的类/对象作为“工具”结构——
+    # LangChain 的 bind_tools 支持这些类型用于 OpenAI 等模型的 function-calling/structured tools。
+    # 这里直接将 TypedDict 类型作为工具传递，是因为 TypedDict 用于描述 expected input/output schema，LangChain 自动推断参数结构，
+    # 并根据这些 schema 调用 API。详见：
+    # https://python.langchain.com/docs/expression_language/cookbook/function_calling
     extraction = model.bind_tools([ExtractPythonCode, NoCode])
 
     er = extraction.invoke(
