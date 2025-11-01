@@ -1,0 +1,15 @@
+# Core dependencies
+langgraph
+langchain>=0.1.0
+python-dotenv>=1.0.0
+
+# LangGraph CLI for dev server
+langgraph-cli[inmem]>=0.1.0
+
+# Additional dependencies for coding example
+openevals
+pyright
+
+# Local package (will be installed in editable mode)
+-e .
+

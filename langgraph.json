@@ -1,0 +1,8 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "reflection_app": "./examples/coding.py:reflection_app"
+  },
+  "env": ".env"
+}
+

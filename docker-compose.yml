@@ -1,0 +1,29 @@
+services:
+  langgraph-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: langgraph-reflection-app
+    ports:
+      - "2024:2024"
+    command: ["langgraph", "dev", "--host", "0.0.0.0", "--port", "2024"]
+    env_file:
+      - .env
+    volumes:
+      # Mount source code for development (optional, comment out for production)
+      - ./src:/app/src
+      - ./examples:/app/examples
+      - ./langgraph.json:/app/langgraph.json
+    environment:
+      - PYTHONPATH=/app
+      # Map AZURE_OPENAI_API_VERSION to OPENAI_API_VERSION for LangChain compatibility
+      # This ensures both environment variables are available
+      - OPENAI_API_VERSION=${AZURE_OPENAI_API_VERSION}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:2024/docs || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
